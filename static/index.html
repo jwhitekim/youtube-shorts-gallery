@@ -1,25 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>YouTube Shorts 썸네일 모음</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shorts Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Fira+Code:wght@300;400&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div id="auth-section" style="display:none; text-align:center; padding: 60px 40px;">
-    <h1>YouTube Shorts 갤러리</h1>
-    <p>좋아요 누른 Shorts를 자동으로 모아봅니다.</p>
-    <a href="/auth/login" class="login-button">Google로 로그인</a>
+  <div id="auth-section" style="display:none">
+    <div class="auth-center">
+      <div class="auth-glow"></div>
+      <p class="auth-eyebrow">personal collection</p>
+      <h1 class="auth-headline">Shorts<br><em>Archive</em></h1>
+      <p class="auth-desc">좋아요 누른 YouTube Shorts를<br>자동으로 아카이브합니다.</p>
+      <a href="/auth/login" class="login-btn">
+        <span class="status-dot green-dot"></span>
+        Google로 로그인
+      </a>
+    </div>
   </div>
 
-  <div id="app-section" style="display:none;">
-    <h1>YouTube Shorts 썸네일 모음</h1>
-    <div id="sync-status"></div>
+  <div id="app-section" style="display:none">
+    <header class="app-header">
+      <div class="header-brand">
+        <span class="status-dot red-dot"></span>
+        <span>Shorts Archive</span>
+      </div>
+      <div id="sync-status"></div>
+    </header>
+
     <div class="grid" id="videoGrid"></div>
+
     <div class="controls">
-      <button id="copyAll">전체 링크 복사</button>
+      <button id="copyAll">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        전체 링크 복사
+      </button>
       <button id="logoutBtn">로그아웃</button>
     </div>
   </div>
