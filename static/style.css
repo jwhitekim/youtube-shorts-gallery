@@ -1,0 +1,133 @@
+body {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  background-color: #0d0f14;
+  color: #f1f5f9;
+  min-height: 100vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0 40px 80px;
+  box-sizing: border-box;
+}
+h1 { text-align: center; color: #fff; font-size: 2rem; margin-bottom: 10px; }
+p  { text-align: center; color: #9ca3af; margin-bottom: 30px; }
+
+/* ── Login ─────────────────────────────────── */
+.login-button {
+  display: inline-block;
+  background-color: #3b82f6;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  margin-top: 16px;
+}
+.login-button:hover { background-color: #2563eb; }
+
+/* ── Sync status ────────────────────────────── */
+#sync-status {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  min-height: 1.4em;
+}
+
+/* ── Grid ───────────────────────────────────── */
+.grid {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  align-items: start;
+}
+
+.card {
+  background-color: #1a1f2b;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  position: relative;
+}
+
+/* 16:9 default */
+.thumb-container {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #334155;
+}
+
+/* 9:16 Shorts */
+.thumb-container.short-container {
+  aspect-ratio: 9 / 16;
+}
+
+/* ── Buttons ────────────────────────────────── */
+.delete-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(239, 68, 68, 0.8);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 28px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+.card:hover .delete-button { opacity: 1; }
+.delete-button:hover { background-color: rgba(220, 38, 38, 1); }
+
+.controls {
+  text-align: center;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.controls button {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+#copyAll    { background-color: #10b981; color: #041b15; }
+#logoutBtn  { background-color: #475569; color: #f1f5f9; }
+
+/* ── Drag ───────────────────────────────────── */
+.card.dragging { opacity: 0.4; }
+.category-grid.drag-over { outline: 2px dashed #3b82f6; }
+
+/* ── Mobile ─────────────────────────────────── */
+@media (max-width: 768px) {
+  body { padding: 0 0 80px !important; }
+  .grid { padding: 0 !important; margin: 0 !important; width: 100% !important; }
+
+  .thumb-container { max-width: 100% !important; margin: 0 auto; border-radius: 0 !important; }
+
+  .category-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0 !important;
+  }
+  .card { border-radius: 0 !important; box-shadow: none !important; }
+
+  .delete-button { width: 22px; height: 22px; font-size: 12px; line-height: 22px; }
+}
+
+@media (min-width: 768px) and (max-width: 900px) {
+  .category-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+}
