@@ -160,7 +160,7 @@ body {
 }
 
 .category-grid {
-  column-width: 320px;
+  column-width: 450px;
   column-gap: var(--space-lg);
   max-width: 1440px;
   margin: 0 auto;
