@@ -23,7 +23,7 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:5173",
         "http://localhost:8000",
-        "https://shorts-gallery-production.up.railway.app",
+        "https://ssg.up.railway.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
