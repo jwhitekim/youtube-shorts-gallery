@@ -219,24 +219,6 @@ body {
   aspect-ratio: 9 / 16;
 }
 
-/* ── Card title & meta (§5.4) ────────────────────────────────────────────── */
-.card-title {
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-  line-height: 1.4;
-  margin-top: var(--space-sm);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-meta {
-  font-size: var(--fs-meta);
-  color: var(--text-secondary);
-  margin-top: var(--space-md);
-}
 
 /* ── Delete button ──────────────────────────────────────────────────────── */
 .delete-button {

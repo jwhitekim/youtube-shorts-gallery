@@ -126,15 +126,11 @@ function createCardElement(video) {
     var videoUrl = getSmartYouTubeLink(video.video_id, video.is_short);
     var containerClass = video.is_short ? 'thumb-container short-container' : 'thumb-container';
 
-    var meta = video.liked_at ? formatLikedAt(video.liked_at) : '';
-
     card.innerHTML =
         '<a href="' + videoUrl + '" target="_blank" rel="noopener noreferrer"' +
            ' class="' + containerClass + '"' +
            ' data-src="' + thumbUrl + '">' +
         '</a>' +
-        '<p class="card-title">' + escapeHtml(video.title || '') + '</p>' +
-        (meta ? '<p class="card-meta">' + meta + '</p>' : '') +
         '<button class="delete-button"' +
             ' onclick="deleteVideoItem(event, \'' + video.video_id + '\')">' +
             '&times;' +
