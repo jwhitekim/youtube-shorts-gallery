@@ -1,13 +1,15 @@
+import asyncio
 import os
 from datetime import datetime, timezone
 
-import isodate
+import httpx
 from fastapi import HTTPException
 from google.auth.transport.requests import Request as GoogleRequest
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 from .database import (
+    get_existing_video_ids,
     get_last_sync_time,
     get_shorts_count,
     get_user_by_id,
@@ -16,12 +18,32 @@ from .database import (
     upsert_shorts,
 )
 
+_SHORTS_CONCURRENCY = 10
 
-def _is_short(duration_str: str) -> bool:
+
+async def _check_is_short(client: httpx.AsyncClient, video_id: str) -> bool:
     try:
-        return isodate.parse_duration(duration_str).total_seconds() <= 180
+        resp = await client.head(
+            f"https://www.youtube.com/shorts/{video_id}",
+            follow_redirects=False,
+            headers={"User-Agent": "Mozilla/5.0"},
+        )
+        return resp.status_code == 200
     except Exception:
         return False
+
+
+async def _bulk_check_shorts(video_ids: list[str]) -> dict[str, bool]:
+    sem = asyncio.Semaphore(_SHORTS_CONCURRENCY)
+
+    async def check(client: httpx.AsyncClient, vid: str) -> tuple[str, bool]:
+        async with sem:
+            return vid, await _check_is_short(client, vid)
+
+    async with httpx.AsyncClient(timeout=10) as client:
+        results = await asyncio.gather(*[check(client, vid) for vid in video_ids])
+
+    return dict(results)
 
 
 async def _get_credentials(user: dict) -> Credentials:
@@ -95,7 +117,7 @@ async def sync_liked_shorts(user_id: str) -> dict:
         if not next_page_token:
             break
 
-    # Step 2: batch-fetch durations and titles, filter Shorts
+    # Step 2: batch-fetch titles
     liked_map = {vid: ts for vid, ts in video_liked}
     all_ids = list(liked_map.keys())
     shorts: list[dict] = []
@@ -104,21 +126,28 @@ async def sync_liked_shorts(user_id: str) -> dict:
         batch = all_ids[i : i + 50]
         resp = youtube.videos().list(
             id=",".join(batch),
-            part="contentDetails,snippet",
+            part="snippet",
         ).execute()
 
         for item in resp.get("items", []):
             vid_id = item["id"]
-            duration = item["contentDetails"].get("duration", "")
             title = item["snippet"].get("title", "")
-            if _is_short(duration):
-                shorts.append({
-                    "video_id": vid_id,
-                    "title": title,
-                    "liked_at": liked_map.get(vid_id, ""),
-                })
+            shorts.append({
+                "video_id": vid_id,
+                "title": title,
+                "liked_at": liked_map.get(vid_id, ""),
+            })
 
-    added = await upsert_shorts(user_id, shorts)
+    # HTTP-check is_short only for videos not yet in DB
+    existing_ids = await get_existing_video_ids(user_id)
+    new_ids = [v["video_id"] for v in shorts if v["video_id"] not in existing_ids]
+    if new_ids:
+        is_short_map = await _bulk_check_shorts(new_ids)
+        for v in shorts:
+            if v["video_id"] in is_short_map:
+                v["is_short"] = is_short_map[v["video_id"]]
+
+    added = await upsert_shorts(user_id, shorts, existing_ids)
     await update_last_sync(user_id)
     total = await get_shorts_count(user_id)
 

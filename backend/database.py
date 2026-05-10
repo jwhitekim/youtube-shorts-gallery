@@ -45,24 +45,24 @@ async def update_user_tokens(user_id: str, access_token: str, token_expires_at: 
     }).eq("id", user_id).execute()
 
 
-async def upsert_shorts(user_id: str, shorts: list[dict]) -> int:
-    if not shorts:
-        return 0
+async def get_existing_video_ids(user_id: str) -> set[str]:
     supabase = get_supabase()
+    result = supabase.table("shorts").select("video_id").eq("user_id", user_id).execute()
+    return {r["video_id"] for r in (result.data or [])}
 
-    existing = supabase.table("shorts").select("video_id").eq("user_id", user_id).execute()
-    existing_ids = {r["video_id"] for r in (existing.data or [])}
 
+async def upsert_shorts(user_id: str, shorts: list[dict], existing_ids: set[str]) -> int:
     new_shorts = [s for s in shorts if s["video_id"] not in existing_ids]
     if not new_shorts:
         return 0
 
+    supabase = get_supabase()
     data = [
         {
             "user_id": user_id,
             "video_id": s["video_id"],
             "title": s["title"],
-            "is_short": True,
+            "is_short": s.get("is_short", False),
             "liked_at": s.get("liked_at"),
         }
         for s in new_shorts
@@ -77,7 +77,6 @@ async def get_shorts(user_id: str) -> list[dict]:
         supabase.table("shorts")
         .select("*")
         .eq("user_id", user_id)
-        .eq("is_short", True)
         .order("display_order", desc=False, nullsfirst=False)
         .order("liked_at", desc=True)
         .execute()

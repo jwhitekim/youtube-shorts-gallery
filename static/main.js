@@ -131,6 +131,7 @@ function createCardElement(video) {
            ' class="' + containerClass + '"' +
            ' data-src="' + thumbUrl + '">' +
         '</a>' +
+        '<p class="card-title">' + escapeHtml(video.title || '') + '</p>' +
         '<button class="delete-button"' +
             ' onclick="deleteVideoItem(event, \'' + video.video_id + '\')">' +
             '&times;' +
@@ -168,23 +169,52 @@ function initializeLazyLoader() {
             var img = new Image();
             img.src = src;
             img.onload = function() {
-                var url = this.naturalWidth <= 480
-                    ? 'https://img.youtube.com/vi/' + _videoIdFromThumbUrl(src) + '/hqdefault.jpg'
-                    : src;
-                container.style.backgroundImage = "url('" + url + "')";
+                var videoId = _videoIdFromThumbUrl(src);
+                // maxresdefault placeholder is 120×90 — treat as missing
+                if (this.naturalWidth <= 480) {
+                    var hq = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+                    var hqImg = new Image();
+                    hqImg.src = hq;
+                    hqImg.onload = function() {
+                        applyThumbnail(container, hq, this.naturalWidth, this.naturalHeight);
+                    };
+                    hqImg.onerror = function() {
+                        container.style.backgroundImage = "url('" + hq + "')";
+                    };
+                } else {
+                    applyThumbnail(container, src, this.naturalWidth, this.naturalHeight);
+                }
             };
             img.onerror = function() {
-                var hq = 'https://img.youtube.com/vi/' + _videoIdFromThumbUrl(src) + '/hqdefault.jpg';
-                container.style.backgroundImage = "url('" + hq + "')";
+                var videoId = _videoIdFromThumbUrl(src);
+                var hq = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+                var fallback = new Image();
+                fallback.src = hq;
+                fallback.onload = function() {
+                    applyThumbnail(container, hq, this.naturalWidth, this.naturalHeight);
+                };
+                fallback.onerror = function() {
+                    container.style.backgroundImage = "url('" + hq + "')";
+                };
             };
             observer.unobserve(container);
         });
     }, { root: null, rootMargin: '200px', threshold: 0 });
 }
 
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function _videoIdFromThumbUrl(url) {
     var m = url.match(/\/vi\/([^/]+)\//);
     return m ? m[1] : '';
+}
+
+function applyThumbnail(container, url, w, h) {
+    container.style.aspectRatio = h > w ? '9 / 16' : '16 / 9';
+    container.style.backgroundImage = "url('" + url + "')";
+    console.debug('[thumb]', _videoIdFromThumbUrl(url), w + 'x' + h, h > w ? 'portrait' : 'landscape');
 }
 
 // ── Delete ─────────────────────────────────────────────────────────────────

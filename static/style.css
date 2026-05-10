@@ -11,6 +11,7 @@
   --selected-bg:    #0f0f0f;
   --selected-text:  #ffffff;
 
+  --space-xs:  4px;
   --space-sm:  8px;
   --space-md:  12px;
   --space-lg:  16px;
@@ -18,6 +19,7 @@
   --space-2xl: 40px;
 
   --radius-sm:   8px;
+  --radius-md:   10px;
   --radius-lg:   12px;
   --radius-pill: 9999px;
 
@@ -215,6 +217,19 @@ body {
   aspect-ratio: 9 / 16;
 }
 
+/* ── Card title (§5.4) ───────────────────────────────────────────────────── */
+.card-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-top: var(--space-sm);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* ── Delete button ──────────────────────────────────────────────────────── */
 .delete-button {
   position: absolute;
@@ -241,7 +256,7 @@ body {
 .card.dragging { opacity: 0.25; }
 
 .category-grid.drag-over {
-  outline: 2px dashed var(--bg-additive);
+  outline: 2px dashed var(--text-secondary);
   outline-offset: 8px;
 }
 
