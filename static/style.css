@@ -160,7 +160,7 @@ body {
 }
 
 .category-grid {
-  column-width: 240px;
+  column-width: 320px;
   column-gap: var(--space-lg);
   max-width: 1440px;
   margin: 0 auto;
@@ -172,7 +172,7 @@ body {
   cursor: grab;
   animation: card-in 0.3s ease both;
   break-inside: avoid;
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-lg);
 }
 
 .card:active { cursor: grabbing; }
@@ -257,7 +257,7 @@ body {
     column-width: 150px;
     column-gap: var(--space-sm);
   }
-  .card { margin-bottom: var(--space-xl); }
+  .card { margin-bottom: var(--space-sm); }
   .app-header { padding: 0 var(--space-md); }
   #sync-status { display: none; }
 }
