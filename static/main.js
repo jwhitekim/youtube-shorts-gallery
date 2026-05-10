@@ -219,9 +219,7 @@ function _videoIdFromThumbUrl(url) {
 }
 
 function applyThumbnail(container, url, w, h) {
-    container.style.aspectRatio = h > w ? '9 / 16' : '16 / 9';
     container.style.backgroundImage = "url('" + url + "')";
-    console.debug('[thumb]', _videoIdFromThumbUrl(url), w + 'x' + h, h > w ? 'portrait' : 'landscape');
 }
 
 // ── Delete ─────────────────────────────────────────────────────────────────
