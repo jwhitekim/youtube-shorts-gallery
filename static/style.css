@@ -160,10 +160,8 @@ body {
 }
 
 .category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  column-width: 240px;
   column-gap: var(--space-lg);
-  row-gap: var(--space-2xl);
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -173,6 +171,8 @@ body {
   position: relative;
   cursor: grab;
   animation: card-in 0.3s ease both;
+  break-inside: avoid;
+  margin-bottom: var(--space-2xl);
 }
 
 .card:active { cursor: grabbing; }
@@ -272,10 +272,10 @@ body {
 @media (max-width: 768px) {
   .grid { padding: var(--space-sm); }
   .category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    column-width: 150px;
     column-gap: var(--space-sm);
-    row-gap: var(--space-xl);
   }
+  .card { margin-bottom: var(--space-xl); }
   .app-header { padding: 0 var(--space-md); }
   #sync-status { display: none; }
 }
