@@ -5,6 +5,7 @@
 :root {
   --bg-base:        #ffffff;
   --bg-additive:    #f2f2f2;
+  --bg-hover:       #e5e5e5;
   --text-primary:   #0f0f0f;
   --text-secondary: #606060;
   --brand-red:      #ff0000;
@@ -27,6 +28,7 @@
   --fs-meta:     12px;
   --fs-body:     14px;
   --fs-title:    16px;
+  --fs-section:  20px;
   --fw-regular:  400;
   --fw-medium:   500;
   --fw-semibold: 600;
@@ -63,7 +65,7 @@ body {
 }
 
 .auth-logo-text {
-  font-size: 22px;
+  font-size: var(--fs-section);
   font-weight: var(--fw-bold);
   color: var(--text-primary);
 }
@@ -89,7 +91,7 @@ body {
   border-radius: var(--radius-pill);
   transition: background 0.15s;
 }
-.login-btn:hover { background: #e5e5e5; }
+.login-btn:hover { background: var(--bg-hover); }
 
 /* ── App header ──────────────────────────────────────────────────────────── */
 .app-header {
@@ -140,7 +142,7 @@ body {
 }
 
 #copyAll   { background: var(--bg-additive); color: var(--text-primary); }
-#copyAll:hover { background: #e5e5e5; }
+#copyAll:hover { background: var(--bg-hover); }
 
 #logoutBtn { background: transparent; color: var(--text-secondary); }
 #logoutBtn:hover { background: var(--bg-additive); }
@@ -159,9 +161,9 @@ body {
 
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  column-gap: var(--space-lg);   /* 16px — design.md §4.3 */
-  row-gap: var(--space-2xl);     /* 40px — 세로 간격이 가로보다 큼 */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  column-gap: var(--space-lg);
+  row-gap: var(--space-2xl);
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -217,7 +219,7 @@ body {
   aspect-ratio: 9 / 16;
 }
 
-/* ── Card title (§5.4) ───────────────────────────────────────────────────── */
+/* ── Card title & meta (§5.4) ────────────────────────────────────────────── */
 .card-title {
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
@@ -228,6 +230,12 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.card-meta {
+  font-size: var(--fs-meta);
+  color: var(--text-secondary);
+  margin-top: var(--space-md);
 }
 
 /* ── Delete button ──────────────────────────────────────────────────────── */
@@ -264,14 +272,10 @@ body {
 @media (max-width: 768px) {
   .grid { padding: var(--space-sm); }
   .category-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     column-gap: var(--space-sm);
     row-gap: var(--space-xl);
   }
   .app-header { padding: 0 var(--space-md); }
   #sync-status { display: none; }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .category-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
