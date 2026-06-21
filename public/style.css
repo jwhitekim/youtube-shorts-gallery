@@ -212,7 +212,7 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: var(--radius-lg);  /* 12px — design.md §4.3 */
+  border-radius: var(--radius-lg);  /* 12px - docs/design.md section 4.3 */
 }
 
 .thumb-container.short-container {

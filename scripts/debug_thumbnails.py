@@ -1,7 +1,7 @@
 """
 썸네일 크기 디버깅 스크립트
-Usage: python debug_thumbnails.py [video_id ...]
-  예) python debug_thumbnails.py dQw4w9WgXcQ abc123
+Usage: python scripts/debug_thumbnails.py [video_id ...]
+  예) python scripts/debug_thumbnails.py dQw4w9WgXcQ abc123
   인자 없이 실행하면 테스트용 ID 사용
 """
 import sys

@@ -8,7 +8,7 @@ from google.auth.transport.requests import Request as GoogleRequest
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
-from .database import (
+from app.db.supabase import (
     get_existing_video_ids,
     get_last_sync_time,
     get_shorts_count,

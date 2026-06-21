@@ -1,2 +1,1 @@
-# Procfile (확장자 없음, 프로젝트 루트에)
-worker: python main.py
+web: uvicorn app.main:app --host 0.0.0.0 --port $PORT
