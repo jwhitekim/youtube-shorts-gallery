@@ -7,8 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
-from app.api.auth import router as auth_router
-from app.api.shorts import router as shorts_router
+from api.auth import router as auth_router
+from api.shorts import router as shorts_router
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 PUBLIC_DIR = BASE_DIR / "static"
