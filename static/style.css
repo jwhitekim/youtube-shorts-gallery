@@ -160,9 +160,7 @@ body {
 }
 
 .category-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-lg);
+  position: relative;
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -252,10 +250,6 @@ body {
 /* ── Mobile ──────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .grid { padding: var(--space-sm); }
-  .category-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm);
-  }
   .app-header { padding: 0 var(--space-md); }
   #sync-status { display: none; }
 }

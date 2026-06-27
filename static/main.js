@@ -3,6 +3,7 @@ var videos = [];         // [{video_id, title, is_short, liked_at, display_order
 var draggedCard = null;
 var lazyLoadObserver = null;
 var mainGrid = null;
+var _masonryTimer = null;
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
 
@@ -34,6 +35,11 @@ function showApp() {
     });
 
     document.getElementById('copyAll').addEventListener('click', handleCopyAll);
+
+    window.addEventListener('resize', function() {
+        clearTimeout(_masonryTimer);
+        _masonryTimer = setTimeout(layoutMasonry, 100);
+    });
 
     initializeLazyLoader();
 }
@@ -111,6 +117,8 @@ function buildGrid() {
             if (thumb) lazyLoadObserver.observe(thumb);
         }
     });
+
+    layoutMasonry();
 }
 
 function createCardElement(video) {
@@ -137,6 +145,41 @@ function createCardElement(video) {
         '</button>';
 
     return card;
+}
+
+// ── Masonry ────────────────────────────────────────────────────────────────
+
+function layoutMasonry() {
+    if (!mainGrid) return;
+    var container = mainGrid.querySelector('.category-grid');
+    if (!container) return;
+
+    var cards = Array.from(container.querySelectorAll('.card'));
+    if (cards.length === 0) { container.style.height = '0'; return; }
+
+    var isMobile = window.innerWidth <= 768;
+    var gap = isMobile ? 8 : 16;
+    var colCount = isMobile
+        ? 2
+        : Math.max(1, Math.floor((container.offsetWidth + gap) / (320 + gap)));
+    var colWidth = (container.offsetWidth - gap * (colCount - 1)) / colCount;
+    var colHeights = new Array(colCount).fill(0);
+
+    cards.forEach(function(card) {
+        var col = colHeights.indexOf(Math.min.apply(null, colHeights));
+        card.style.position = 'absolute';
+        card.style.width = colWidth + 'px';
+        card.style.left = col * (colWidth + gap) + 'px';
+        card.style.top = colHeights[col] + 'px';
+
+        var thumb = card.querySelector('.thumb-container');
+        var cardHeight = (thumb && thumb.classList.contains('short-container'))
+            ? colWidth * 16 / 9
+            : colWidth * 9 / 16;
+        colHeights[col] += cardHeight + gap;
+    });
+
+    container.style.height = (Math.max.apply(null, colHeights) - gap) + 'px';
 }
 
 // ── Thumbnails ─────────────────────────────────────────────────────────────
@@ -316,6 +359,7 @@ function handleDrop(e) {
     });
 
     saveOrder(newOrder);
+    layoutMasonry();
 }
 
 function getClosestCard(container, x, y) {
