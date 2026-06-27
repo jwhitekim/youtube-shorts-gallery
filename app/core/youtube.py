@@ -9,6 +9,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 from core.database import (
+    delete_shorts_by_ids,
     get_existing_video_ids,
     get_last_sync_time,
     get_shorts_count,
@@ -117,10 +118,11 @@ async def sync_liked_shorts(user_id: str) -> dict:
         if not next_page_token:
             break
 
-    # Step 2: batch-fetch titles
+    # Step 2: batch-fetch titles (unavailable videos are absent from response)
     liked_map = {vid: ts for vid, ts in video_liked}
     all_ids = list(liked_map.keys())
     shorts: list[dict] = []
+    fetched_ids: set[str] = set()
 
     for i in range(0, len(all_ids), 50):
         batch = all_ids[i : i + 50]
@@ -131,6 +133,7 @@ async def sync_liked_shorts(user_id: str) -> dict:
 
         for item in resp.get("items", []):
             vid_id = item["id"]
+            fetched_ids.add(vid_id)
             title = item["snippet"].get("title", "")
             shorts.append({
                 "video_id": vid_id,
@@ -138,8 +141,14 @@ async def sync_liked_shorts(user_id: str) -> dict:
                 "liked_at": liked_map.get(vid_id, ""),
             })
 
-    # HTTP-check is_short only for videos not yet in DB
+    # Remove deleted/private videos from DB
     existing_ids = await get_existing_video_ids(user_id)
+    unavailable_ids = (set(all_ids) - fetched_ids) & existing_ids
+    if unavailable_ids:
+        await delete_shorts_by_ids(user_id, list(unavailable_ids))
+        existing_ids -= unavailable_ids
+
+    # HTTP-check is_short only for videos not yet in DB
     new_ids = [v["video_id"] for v in shorts if v["video_id"] not in existing_ids]
     if new_ids:
         is_short_map = await _bulk_check_shorts(new_ids)
@@ -151,4 +160,4 @@ async def sync_liked_shorts(user_id: str) -> dict:
     await update_last_sync(user_id)
     total = await get_shorts_count(user_id)
 
-    return {"added": added, "total": total}
+    return {"added": added, "removed": len(unavailable_ids), "total": total}

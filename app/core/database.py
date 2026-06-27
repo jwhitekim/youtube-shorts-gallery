@@ -67,7 +67,7 @@ async def upsert_shorts(user_id: str, shorts: list[dict], existing_ids: set[str]
         }
         for s in new_shorts
     ]
-    supabase.table("shorts").insert(data).execute()
+    supabase.table("shorts").upsert(data, on_conflict="user_id,video_id").execute()
     return len(new_shorts)
 
 
@@ -79,6 +79,7 @@ async def get_shorts(user_id: str) -> list[dict]:
         .eq("user_id", user_id)
         .order("display_order", desc=False, nullsfirst=False)
         .order("liked_at", desc=True)
+        .limit(10000)
         .execute()
     )
     return result.data or []
@@ -98,6 +99,11 @@ async def get_shorts_count(user_id: str) -> int:
 async def delete_short(user_id: str, video_id: str):
     supabase = get_supabase()
     supabase.table("shorts").delete().eq("user_id", user_id).eq("video_id", video_id).execute()
+
+
+async def delete_shorts_by_ids(user_id: str, video_ids: list[str]):
+    supabase = get_supabase()
+    supabase.table("shorts").delete().eq("user_id", user_id).in_("video_id", video_ids).execute()
 
 
 async def reorder_shorts(user_id: str, video_ids: list[str]):
