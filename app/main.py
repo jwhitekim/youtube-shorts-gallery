@@ -11,7 +11,7 @@ from app.api.auth import router as auth_router
 from app.api.shorts import router as shorts_router
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-PUBLIC_DIR = BASE_DIR / "public"
+PUBLIC_DIR = BASE_DIR / "static"
 
 
 def create_app() -> FastAPI:
@@ -41,3 +41,10 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+if __name__ == "__main__":
+    import uvicorn
+    import os
+
+    port = int(os.environ.get("PORT", "8000"))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
