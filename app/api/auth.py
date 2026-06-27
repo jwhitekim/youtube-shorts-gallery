@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse
 from google_auth_oauthlib.flow import Flow
 
-from app.core.database import upsert_user
+from core.database import upsert_user
 
 router = APIRouter()
 
@@ -86,7 +86,7 @@ async def me(request: Request):
     if not user_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
-    from app.core.database import get_user_by_id
+    from core.database import get_user_by_id
     user = await get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=401, detail="User not found")

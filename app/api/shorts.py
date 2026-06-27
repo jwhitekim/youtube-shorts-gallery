@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request
 
-from app.core.database import delete_short, get_shorts, reorder_shorts
-from app.core.youtube import sync_liked_shorts
+from core.database import delete_short, get_shorts, reorder_shorts
+from core.youtube import sync_liked_shorts
 
 router = APIRouter(prefix="/shorts")
 
